@@ -122,15 +122,18 @@ main {
 
 .character {
     display: grid;
-    grid-template-rows: 1.5fr 1fr 2fr;
+    grid-template-rows: 1fr 1fr 2fr;
     height: 700px;
     width: 200px;
+    margin-top: 80px;
 }
 
 .bg {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
+    height: fit-content;
+    width: fit-content;
 
 }
 
@@ -160,4 +163,9 @@ form button {
     position: absolute;
     top: 20px;
     right: 20px;
+}
+
+img {
+    height: 150px;
+    width: 150px;
 }

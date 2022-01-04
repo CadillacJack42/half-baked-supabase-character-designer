@@ -1,7 +1,7 @@
-const SUPABASE_URL = 'https://gxwgjhfyrlwiqakdeamc.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYzNjQxMTMxMiwiZXhwIjoxOTUxOTg3MzEyfQ.PHekiwfLxT73qQsLklp0QFEfNx9NlmkssJFDnlvNIcA';
+export const SUPABASE_URL = 'https://gxwgjhfyrlwiqakdeamc.supabase.co';
+export const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYzNjQxMTMxMiwiZXhwIjoxOTUxOTg3MzEyfQ.PHekiwfLxT73qQsLklp0QFEfNx9NlmkssJFDnlvNIcA';
 
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+export const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 export async function createCharacter(character){
     const newCharacter = {
@@ -9,22 +9,38 @@ export async function createCharacter(character){
         user_id: client.auth.user().id, 
     };
 
+    const response = await client
+        .from('characters')
+        .insert({ ...newCharacter })
+        .match({ user_id: newCharacter.user_id })
+        .single();
+    console.log(response.data);
+
     // use the newCharacter to create a single new character for this user in supabase
-    return checkError(response);
+    return checkError(response.data);
 }
 
 export async function updateHead(value){
     const currentUserId = client.auth.user().id;
-
     // in supabase, update the head property
     // for the character whose user_id match's the currently logged in user's id
+
+    const response = await client
+        .from('characters')
+        .update({ head: value })
+        .match({ user_id: currentUserId })
+        .single();
 
     return checkError(response);    
 }
 
-
 export async function updateMiddle(value){
     const currentUserId = client.auth.user().id;
+    const response = await client
+        .from('characters')
+        .update({ middle: value })
+        .match({ user_id: currentUserId })
+        .single();
 
     // in supabase, update the middle property
     // for the character whose user_id match's the currently logged in user's id
@@ -32,9 +48,13 @@ export async function updateMiddle(value){
     return checkError(response);    
 }
 
-
 export async function updateBottom(value){
     const currentUserId = client.auth.user().id;
+    const response = await client
+        .from('characters')
+        .update({ bottom: value })
+        .match({ user_id: currentUserId })
+        .single();
 
     // in supabase, update the bottom property
     // for the character whose user_id match's the currently logged in user's id
@@ -45,12 +65,17 @@ export async function updateBottom(value){
 export async function updateChatchphrases(value){
     const currentUserId = client.auth.user().id;
 
+    const response = await client
+        .from('characters')
+        .update({ catchphrases: value })
+        .match({ user_id: currentUserId });
+        // .single();
+
     // in supabase, update the catchphrases property
     // for the character whose user_id match's the currently logged in user's id
 
     return checkError(response);    
 }
-
 
 /*
 CHALLENGE: how would you use this function? which functions would it replace? what's going on with the brackets in the update() arguments?
@@ -67,7 +92,6 @@ export async function updateCharacter(part, value){
 }
 */
 
-
 export async function getCharacter() {
     const response = await client
         .from('characters')
@@ -82,7 +106,6 @@ export async function getUser() {
     return client.auth.session();
 }
 
-
 export async function checkAuth() {
     const user = await getUser();
 
@@ -91,7 +114,7 @@ export async function checkAuth() {
 
 export async function redirectToBuild() {
     if (await getUser()) {
-        location.replace('./build');
+        location.replace('./character');
     }
 }
 
