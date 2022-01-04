@@ -14,7 +14,6 @@ export async function createCharacter(character){
         .insert({ ...newCharacter })
         .match({ user_id: newCharacter.user_id })
         .single();
-    console.log(response.data);
 
     // use the newCharacter to create a single new character for this user in supabase
     return checkError(response.data);
@@ -98,7 +97,7 @@ export async function getCharacter() {
         .select()
         .match({ user_id: client.auth.user().id, })
         .single();
-
+    console.log(response);
     return checkError(response);    
 }
 
@@ -139,3 +138,10 @@ export async function logout() {
 function checkError({ data, error }) {
     return error ? console.error(error) : data;
 }
+
+export const characterDetails = async() => {
+    const user = await getUser();
+    const character = await getCharacter();
+    console.log(character);
+    return [user.user.id, character];
+};

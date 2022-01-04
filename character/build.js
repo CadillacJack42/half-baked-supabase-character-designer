@@ -1,6 +1,6 @@
 import { 
     checkAuth, 
-    getCharacter,
+    characterDetails,
     logout, 
     createCharacter,
     updateBottom,
@@ -9,6 +9,9 @@ import {
     updateChatchphrases,
     client
 } from '../fetch-utils.js';
+
+const character = characterDetails;
+
 
 checkAuth();
 
@@ -74,23 +77,25 @@ catchphraseButton.addEventListener('click', async() => {
 });
 
 window.addEventListener('load', async() => {
-    let character;
-    // on load, attempt to fetch this user's character
-    const user = await getCharacter();
-    console.log(user);
+    // let character;
+    // // on load, attempt to fetch this user's character
+    // const user = await getCharacter();
+    // // console.log(user);
     
-    if (!user) {
-        character = {
+    
+    if (!character()) {
+        const newCharacter = {
             head: 'bird',
             middle: 'blue',
             bottom: 'blue',
             catchphrases: ["You're my boy Blue"]
         };
-        await createCharacter(character);
+        await createCharacter(newCharacter);
+        console.log(character());
     } else {
-        headDropdown.value = user.head;
-        middleDropdown.value = user.middle;
-        bottomDropdown.value = user.bottom;
+        headDropdown.value = character.head;
+        middleDropdown.value = character.middle;
+        bottomDropdown.value = character.bottom;
     }
     
     await fetchAndDisplayCharacter();
@@ -116,14 +121,14 @@ async function fetchAndDisplayCharacter() {
     middleEl.textContent = '';
     bottomEl.textContent = '';
 
-    const currentUserId = client.auth.user().id;  
-    // fetch the caracter from supabase
-    let character = await client
-        .from('characters')
-        .select()
-        .match({ user_id: currentUserId })
-        .single();
-    character = character.data;
+    // const currentUserId = await client.auth.user().id;
+    // fetch the carachter from supabase
+    // let character = await client
+    //     .from('characters')
+    //     .select()
+    //     .match({ user_id: currentUserId })
+    //     .single();
+    // character = character.data;
 
     const head = character.head;
     const middle = character.middle;
